@@ -1,0 +1,14 @@
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\BackpropagationEngine.Tests.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\BackpropagationEngine.Tests.pdb
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\obj\Debug\BackpropagationEngine.Tests.csproj.CoreCompileInputs.cache
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\obj\Debug\BackpropagationEngine.Tests.csproj.CopyComplete
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\obj\Debug\BackpropagationEngine.Tests.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\obj\Debug\BackpropagationEngine.Tests.pdb
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine.Tests\obj\Debug\BackpropagationEngine.Tests.csprojAssemblyReference.cache
