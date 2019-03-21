@@ -1,0 +1,5 @@
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine\bin\Debug\BackpropagationEngine.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine\bin\Debug\BackpropagationEngine.pdb
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine\obj\Debug\BackpropagationEngine.csproj.CoreCompileInputs.cache
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine\obj\Debug\BackpropagationEngine.dll
+C:\Noodling\Machine Learning\NeuralNetworks\BackpropagationEngine\BackpropagationEngine\obj\Debug\BackpropagationEngine.pdb
