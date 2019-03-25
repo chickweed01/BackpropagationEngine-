@@ -1,66 +1,46 @@
-﻿using BackpropagationEngine.Nodes;
+﻿using NN.Utility;
+using NN.Utility.Nodes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using static BackpropagationEngine.Activation;
 
 namespace BackpropagationEngine
 {
-    public static class BackpropagationEngine
+    public class BackpropagationEngine
     {
         public enum ActivationAlgorithm { Sigmoid, HyperTan, SoftMax };
-        public static Activation activation = new Activation();
-        public static ApplyActivationForScalar logSigActivation = activation.Sigmoid;
-        public static ApplyActivationForVector softMaxActivation = activation.Softmax;
 
-        public static double[] computeOutputGradients(List<OutputNode> outputNodes, ArrayList targetValues)
+        private static Activation activation = new Activation();
+        private Activation.ApplyActivationDelegate logSigActivation = activation.Sigmoid;
+        private Activation.ApplyActivationDelegate hyperTanActivation = activation.HyperTan;
+        private Activation.ApplyActivationForVector softMaxActivation = activation.Softmax;
+
+        public void doBackProp(double learningRate, double momentum, double[] targetValues, 
+                                      ref IList<InputNode> inputLayer, ref IList<HiddenNode> hiddenLayer, ref IList<OutputNode> outputLayer)
         {
-            /*
-             * output gradients are calculated as follows:
-             * oGrad = calculated output value(1-calculated output value) * (target output value - calculated output value)
-             */
-
-            int index = 0;
-            var outputGradients = new double[outputNodes.Count];
-
-            foreach (OutputNode oNode in outputNodes)
+            try
             {
-                outputGradients[index] = oNode.Val * (1.0 - oNode.Val) * ((double)targetValues[index] - oNode.Val);
-                index++;
+                // Compute and display outputs. 
+                calculateActivatedSumsForLayer(ref hiddenLayer, ActivationAlgorithm.HyperTan);
+                calculateActivatedSumsForLayer(ref outputLayer, ActivationAlgorithm.SoftMax);
+
+                //compute gradients of output nodes
+                calculateGradientsForOutputLayer(ref outputLayer, targetValues, ActivationAlgorithm.Sigmoid);
+
+                //compute gradients of hidden nodes
+                calculateGradientsForHiddenLayer(ref hiddenLayer, outputLayer, ActivationAlgorithm.Sigmoid);
+
+                //update all weights and bias values
+                adjustWeightsAtLayer(ref hiddenLayer, learningRate, momentum);  //hidden-to-output weights
+                adjustWeightsAtLayer(ref inputLayer, learningRate, momentum);  //input-to-hidden weights
             }
-
-            return outputGradients;
-        }
-
-        public static double[] computeHiddenGradients(double[] outputGradients, IList<HiddenNode> hiddenNodes)
-        {
-            int indexHidden = 0;
-            int indexOutput;
-            double deriviative;
-            double sum;
-            var hiddenGradients = new double[hiddenNodes.Count];
-
-            foreach (HiddenNode hNode in hiddenNodes)
+            catch(Exception ex)
             {
-                indexOutput = 0;
-                sum = 0.0;
-                deriviative = (1.0 - hNode.Val) * (1.0 + hNode.Val);
-
-                foreach (Connector oConnector in hNode.OutboundConnectors)
-                {
-                    sum += outputGradients[indexOutput] + oConnector.Weight;
-                    indexOutput++;
-                }
-
-                hiddenGradients[indexHidden] = deriviative * sum;
-                indexHidden++;
+                throw ex;
             }
+        }       
 
-            return hiddenGradients;
-
-        }
-
-        public static void calculateGradientsForHiddenLayer<T>(ref IList<HiddenNode> hiddenLayer, IList<T> downstreamLayer,
-                                                        ActivationAlgorithm activationAlgorithm)
+        private void calculateGradientsForHiddenLayer<T>(ref IList<HiddenNode> hiddenLayer, IList<T> downstreamLayer, ActivationAlgorithm activationAlgorithm)
         {
             double derivative = 0.0;
             double sum = 0.0;
@@ -91,9 +71,7 @@ namespace BackpropagationEngine
             }
         }
 
-        public static void calculateGradientsForOutputLayer(ref IList<OutputNode> outputLayer,
-                                                        double[] targetValues,
-                                                        ActivationAlgorithm activationAlgorithm)
+        private void calculateGradientsForOutputLayer(ref IList<OutputNode> outputLayer, double[] targetValues, ActivationAlgorithm activationAlgorithm)
         {
             int index = 0;
 
@@ -109,8 +87,8 @@ namespace BackpropagationEngine
                 }
             }
         }
-        public static void calculateActivatedSumsForLayer<T>(ref IList<T> layer,
-                                                    ActivationAlgorithm activationAlgorithm)
+
+        private void calculateActivatedSumsForLayer<T>(ref IList<T> layer, ActivationAlgorithm activationAlgorithm)
         {
             //OutputNode
             if (typeof(T) == typeof(OutputNode))
@@ -124,6 +102,8 @@ namespace BackpropagationEngine
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
                         oNode.Val = logSigActivation(oNode.Val);
+                    else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
+                            oNode.Val = hyperTanActivation(oNode.Val);
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -157,6 +137,8 @@ namespace BackpropagationEngine
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
                         hNode.Val = logSigActivation(hNode.Val);
+                    else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
+                        hNode.Val = hyperTanActivation(hNode.Val);
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -180,53 +162,35 @@ namespace BackpropagationEngine
             }
         }
 
-        public static void adjustWeightsAtLayer(ref IList<HiddenNode> hiddenLayer, double learningRate, double momentum)
+        //always adjusts the downstream weights in the node's outbound connectors
+        private void adjustWeightsAtLayer<T>(ref IList<T> layer, double learningRate, double momentum)
         {
-            foreach (HiddenNode hNode in hiddenLayer)
+            //OutputNode
+            if (typeof(T) == typeof(InputNode))
             {
-                foreach (Connector connector in hNode.OutboundConnectors)
+                foreach (InputNode iNode in (List<InputNode>)layer)
                 {
-                    double delta = learningRate * connector.ToNode.Gradient * hNode.Val;
-                    connector.Weight += (delta + momentum);
+                    foreach (Connector connector in iNode.OutboundConnectors)
+                    {
+                        double delta = learningRate * connector.ToNode.Gradient * iNode.Val;
+                        connector.Weight += (delta + (momentum * connector.WeightDelta));
+                        connector.WeightDelta = delta;
+                    }
+                }
+            }
+            else if (typeof(T) == typeof(HiddenNode))
+            {
+                //HiddenNode
+                foreach (HiddenNode hNode in (List<HiddenNode>)layer)
+                {
+                    foreach (Connector connector in hNode.OutboundConnectors)
+                    {
+                        double delta = learningRate * connector.ToNode.Gradient * hNode.Val;
+                        connector.Weight += (delta + (momentum * connector.WeightDelta));
+                        connector.WeightDelta = delta;
+                    }
                 }
             }
         }
-
-
-        //public static void updateWeights(ref List<HiddenNode> hiddenNodes, double[] hiddenGradients, double[] outputGradients, double learningRate, double momentum)
-        //{
-        //    /* update the input-to-hidden weights and then the 
-        //     * hidden-to-output weights */
-        //    double delta, mFactor;
-        //    int index = 0;
-        //    int outputsIndex;
-
-        //    foreach (HiddenNode hNode in hiddenNodes)
-        //    {
-        //        // 1) input-to-hidden weights
-        //        foreach (Connector iConnector in hNode.InboundConnectors)
-        //        {
-        //            delta = learningRate * hiddenGradients[index] * iConnector.FromNode.Val;
-        //            iConnector.Weight += delta;
-        //            mFactor = momentum * iConnector.WeightDelta;
-        //            iConnector.Weight += mFactor;
-        //            iConnector.WeightDelta = delta;
-        //        }
-
-        //        // 2) hidden-to-output weights
-        //        outputsIndex = 0;
-        //        foreach (Connector iConnector in hNode.OutboundConnectors)
-        //        {
-        //            delta = learningRate * outputGradients[outputsIndex] * iConnector.ToNode.Val;
-        //            iConnector.Weight += delta;
-        //            mFactor = momentum * iConnector.WeightDelta;
-        //            iConnector.Weight += mFactor;
-        //            iConnector.WeightDelta = delta;
-        //            outputsIndex++;
-        //        }
-
-        //        index++; //next hidden node
-        //    }
-        //}
     }
 }

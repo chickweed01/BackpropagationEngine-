@@ -6,7 +6,7 @@ namespace BackpropagationEngine
     {
         // delegate declaration
         public delegate double[] ApplyActivationForVector(double[] valueVector);
-        public delegate double ApplyActivationForScalar(double value);
+        public delegate double ApplyActivationDelegate(double value);
 
         // Define methods that have the same signature as the delegates
 
@@ -35,7 +35,7 @@ namespace BackpropagationEngine
             return result; // xi sum to 1.0. 
         }
 
-        public static double HyperTan(double v)
+        public double HyperTan(double v)
         {
             if (v < -20.0)
                 return -1.0;

@@ -43,14 +43,13 @@
   <ItemGroup>
     <Compile Include="Activation.cs" />
     <Compile Include="BackpropagationEngine.cs" />
-    <Compile Include="Connector.cs" />
-    <Compile Include="Nodes\AbstractNode.cs" />
-    <Compile Include="Nodes\BiasNode.cs" />
-    <Compile Include="Nodes\HiddenNode.cs" />
-    <Compile Include="Nodes\InputNode.cs" />
-    <Compile Include="Nodes\OutputNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NN.Utility\NN.Utility.csproj">
+      <Project>{d3130aea-bb5c-4af3-9ad4-c03fbd01090e}</Project>
+      <Name>NN.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
