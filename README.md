@@ -21,6 +21,12 @@ Back-propagation begins with the calculation of the activation values for every 
 4. A weight is adjusted using the input value from the connector's "from node" and the gradient associated with its "to node". For example, the weight delta between a hidden node and an output node would be: weight delta = learning rate * output node gradient * hidden node activation value. The model's momentum parameter is added to the delta value and the delta value is added to the current weight value.
 
 ## Implementation
+The code listing for the Backpropagation class is shown below: 
+![alt text](images/Backpropclass.png)
+
+It does not implement a constructor per se. The public method "doBackProp" accepts the necessary inputs and is responsible for calculating the activation sums (feed-forward) within the hidden and output layers and then performing the necessary calculations for back-prop. Note that the user needs to specify the activation functions at the hidden and output layers.
+![alt text](images/doBackPropmethod.png)
+
 To apply the back-prop API we first have to construct an ANN model. The basic form of the model is a 3-4-2. I will apply my previous post - "A UML-based Approach to Machine Learning – Part 1" to accomplish the following:
 
 * Use the GenericNodeFactory to create the collection of nodes for each layer including the bias nodes for the hidden and output layer
