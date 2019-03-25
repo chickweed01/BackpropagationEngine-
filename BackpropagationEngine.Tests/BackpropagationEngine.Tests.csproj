@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4621AC75-52E5-45F8-A205-B8CD48362FB2}</ProjectGuid>
+    <ProjectGuid>{83B0DE24-ABCC-4F71-A721-B3D661B137BC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BackpropagationEngine.Tests</RootNamespace>
@@ -59,6 +59,10 @@
     <ProjectReference Include="..\BackpropagationEngine\BackpropagationEngine.csproj">
       <Project>{d5df38e4-a5c4-4577-9639-68d33c9b2a52}</Project>
       <Name>BackpropagationEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NN.Utility\NN.Utility.csproj">
+      <Project>{d3130aea-bb5c-4af3-9ad4-c03fbd01090e}</Project>
+      <Name>NN.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
