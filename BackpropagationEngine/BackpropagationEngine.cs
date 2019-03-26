@@ -1,4 +1,5 @@
-﻿using NN.Utility;
+﻿using BackpropagationEngine.Activation;
+using NN.Utility;
 using NN.Utility.Nodes;
 using System;
 using System.Collections;
@@ -9,11 +10,12 @@ namespace BackpropagationEngine
     public class BackpropagationEngine
     {
         public enum ActivationAlgorithm { Sigmoid, HyperTan, SoftMax };
+        protected IActivationFormulaDelegate activationFormulaDelegate;
 
-        private static Activation activation = new Activation();
-        private Activation.ApplyActivationDelegate logSigActivation = activation.Sigmoid;
-        private Activation.ApplyActivationDelegate hyperTanActivation = activation.HyperTan;
-        private Activation.ApplyActivationForVector softMaxActivation = activation.Softmax;
+        //private static Activation activation = new Activation();
+        //private Activation.ApplyActivationDelegate logSigActivation = activation.Sigmoid;
+        //private Activation.ApplyActivationDelegate hyperTanActivation = activation.HyperTan;
+        //private Activation.ApplyActivationForVector softMaxActivation = activation.Softmax;
 
         public void doBackProp(double learningRate, double momentum, double[] targetValues, 
                                       ref IList<InputNode> inputLayer, ref IList<HiddenNode> hiddenLayer, ref IList<OutputNode> outputLayer)
@@ -40,7 +42,8 @@ namespace BackpropagationEngine
             }
         }       
 
-        private void calculateGradientsForHiddenLayer<T>(ref IList<HiddenNode> hiddenLayer, IList<T> downstreamLayer, ActivationAlgorithm activationAlgorithm)
+        private void calculateGradientsForHiddenLayer<T>(ref IList<HiddenNode> hiddenLayer, IList<T> downstreamLayer, 
+                                                        ActivationAlgorithm activationAlgorithm)
         {
             double derivative = 0.0;
             double sum = 0.0;
@@ -52,6 +55,10 @@ namespace BackpropagationEngine
 
                 if (activationAlgorithm == ActivationAlgorithm.HyperTan)
                     derivative = (1 - hNode.Val) * (1 + hNode.Val); // f' of tanh is (1-y)(1+y)
+                else if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
+                    derivative = hNode.Val * (1 - hNode.Val); // f' of sigmoid is y(1-y)
+                else if (activationAlgorithm == ActivationAlgorithm.SoftMax)
+                    derivative = hNode.Val * (1 - hNode.Val); //f' of softmax is y(1-y)
 
                 for (int j = 0; j < downstreamLayer.Count; j++)
                 {
@@ -71,7 +78,8 @@ namespace BackpropagationEngine
             }
         }
 
-        private void calculateGradientsForOutputLayer(ref IList<OutputNode> outputLayer, double[] targetValues, ActivationAlgorithm activationAlgorithm)
+        private void calculateGradientsForOutputLayer(ref IList<OutputNode> outputLayer, double[] targetValues, 
+                                                        ActivationAlgorithm activationAlgorithm)
         {
             int index = 0;
 
@@ -101,9 +109,17 @@ namespace BackpropagationEngine
                     }
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
-                        oNode.Val = logSigActivation(oNode.Val);
+                    {
+                        var sigmoid = new Sigmoid();
+                        activationFormulaDelegate = sigmoid;
+                        oNode.Val = activationFormulaDelegate.applyActivation(oNode.Val);
+                    }
                     else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
-                            oNode.Val = hyperTanActivation(oNode.Val);
+                    {
+                        var hTan = new HyperTan();
+                        activationFormulaDelegate = hTan;
+                        oNode.Val = activationFormulaDelegate.applyActivation(oNode.Val);
+                    }
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -117,7 +133,9 @@ namespace BackpropagationEngine
                     }
 
                     index = 0;
-                    temp = softMaxActivation(temp);
+                    var softMax = new SoftMax();
+                    activationFormulaDelegate = softMax;
+                    temp = activationFormulaDelegate.applyActivation(temp);
                     foreach (OutputNode oNode in (List<OutputNode>)layer)
                     {
                         oNode.Val = temp[index];
@@ -136,9 +154,17 @@ namespace BackpropagationEngine
                     }
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
-                        hNode.Val = logSigActivation(hNode.Val);
+                    {
+                        var sigmoid = new Sigmoid();
+                        activationFormulaDelegate = sigmoid;
+                        hNode.Val = activationFormulaDelegate.applyActivation(hNode.Val);
+                    }
                     else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
-                        hNode.Val = hyperTanActivation(hNode.Val);
+                    {
+                        var hTan = new HyperTan();
+                        activationFormulaDelegate = hTan;
+                        hNode.Val = activationFormulaDelegate.applyActivation(hNode.Val);
+                    }
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -152,7 +178,9 @@ namespace BackpropagationEngine
                     }
 
                     index = 0;
-                    temp = softMaxActivation(temp);
+                    var softMax = new SoftMax();
+                    activationFormulaDelegate = softMax;
+                    temp = activationFormulaDelegate.applyActivation(temp);
                     foreach (HiddenNode oNode in (List<HiddenNode>)layer)
                     {
                         oNode.Val = temp[index];

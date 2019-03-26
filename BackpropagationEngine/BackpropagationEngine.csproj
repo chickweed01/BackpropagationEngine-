@@ -41,8 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activation.cs" />
+    <Compile Include="Activation\HyperTan.cs" />
+    <Compile Include="Activation\Sigmoid.cs" />
+    <Compile Include="Activation\SoftMax.cs" />
     <Compile Include="BackpropagationEngine.cs" />
+    <Compile Include="Activation\IActivationFormulaDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
