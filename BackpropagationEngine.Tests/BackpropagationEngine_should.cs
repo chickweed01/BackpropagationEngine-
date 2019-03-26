@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using BackpropagationEngine.Activation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NN.Utility;
 using NN.Utility.Nodes;
 using System;
 using System.Collections.Generic;
-using static BackpropagationEngine.Activation;
 using static BackpropagationEngine.BackpropagationEngine;
 
 namespace BackpropagationEngine.Tests
@@ -19,10 +19,6 @@ namespace BackpropagationEngine.Tests
         IList<HiddenNode> hiddenLayer;
         IList<OutputNode> outputLayer;
         IList<Connector> hiddenToOutputConnectors;
-        private static Activation activation = new Activation();
-        private ApplyActivationDelegate logSigActivation = activation.Sigmoid;
-        private ApplyActivationDelegate hyperTanActivation = activation.HyperTan;
-        private ApplyActivationForVector softMaxActivation = activation.Softmax;
 
         //public static Activation activation = new Activation();
         //public static BackpropagationEngine..ApplyActivationDelegate logSigActivation = activation.Sigmoid;
@@ -216,9 +212,17 @@ namespace BackpropagationEngine.Tests
                     }
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
-                        oNode.Val = logSigActivation(oNode.Val);
+                    {
+                        var sigmoid = new Sigmoid();
+                        IActivationFormulaDelegate activationFormulaDelegate = sigmoid;
+                        oNode.Val = activationFormulaDelegate.applyActivation(oNode.Val);
+                    }
                     else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
-                        oNode.Val = hyperTanActivation(oNode.Val);
+                    {
+                        var hTan = new HyperTan();
+                        IActivationFormulaDelegate activationFormulaDelegate = hTan;
+                        oNode.Val = activationFormulaDelegate.applyActivation(oNode.Val);
+                    }
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -232,7 +236,9 @@ namespace BackpropagationEngine.Tests
                     }
 
                     index = 0;
-                    temp = softMaxActivation(temp);
+                    var softMax = new SoftMax();
+                    IActivationFormulaDelegate activationFormulaDelegate = softMax;
+                    temp = activationFormulaDelegate.applyActivation(temp);
                     foreach (OutputNode oNode in (List<OutputNode>)layer)
                     {
                         oNode.Val = temp[index];
@@ -251,9 +257,17 @@ namespace BackpropagationEngine.Tests
                     }
 
                     if (activationAlgorithm == ActivationAlgorithm.Sigmoid)
-                        hNode.Val = logSigActivation(hNode.Val);
+                    {
+                        var sigmoid = new Sigmoid();
+                        IActivationFormulaDelegate activationFormulaDelegate = sigmoid;
+                        hNode.Val = activationFormulaDelegate.applyActivation(hNode.Val);
+                    }
                     else if (activationAlgorithm == ActivationAlgorithm.HyperTan)
-                        hNode.Val = hyperTanActivation(hNode.Val);
+                    {
+                        var hTan = new HyperTan();
+                        IActivationFormulaDelegate activationFormulaDelegate = hTan;
+                        hNode.Val = activationFormulaDelegate.applyActivation(hNode.Val);
+                    }
                 }
 
                 if (activationAlgorithm == ActivationAlgorithm.SoftMax)
@@ -267,7 +281,9 @@ namespace BackpropagationEngine.Tests
                     }
 
                     index = 0;
-                    temp = softMaxActivation(temp);
+                    var softMax = new SoftMax();
+                    IActivationFormulaDelegate activationFormulaDelegate = softMax;
+                    temp = activationFormulaDelegate.applyActivation(temp);
                     foreach (HiddenNode oNode in (List<HiddenNode>)layer)
                     {
                         oNode.Val = temp[index];
